@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Edit Notes</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_note_list">Notes</string>
+    <string-array name="note_spinner_options">
+        <item>Title</item>
+        <item>Creation Date</item>
+        <item>Last Modified</item>
+        <item>Reminder</item>
+        <item>Category</item>
+    </string-array>
+</resources>

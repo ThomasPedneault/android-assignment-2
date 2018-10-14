@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="reminderBackgorund">#32000000</color>
+    <color name="colorPrimaryLight">#D8EAFF</color>
+    <color name="colorPrimary">#3f51b5</color>
+    <color name="colorPrimaryDark">#303f9f</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="redCircleColor">#d13b6f</color>
+    <color name="orangeCircleColor">#e39a36</color>
+    <color name="yellowCircleColor">#e7c17e</color>
+    <color name="greenCircleColor">#bcf14c</color>
+    <color name="lightBlueCircleColor">#bdf5e6</color>
+    <color name="darkBlueCircleColor">#92e0ee</color>
+    <color name="purpleCircleColor">#a177f2</color>
+    <color name="whiteCircleColor">#ffffff</color>
+</resources>
