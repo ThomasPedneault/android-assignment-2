@@ -17,26 +17,30 @@ import android.widget.Toast;
 import com.example.a1621638.android_assignment_1.R;
 import com.example.a1621638.android_assignment_1.model.Category;
 import com.example.a1621638.android_assignment_1.model.Note;
-import com.example.a1621638.android_assignment_1.model.SampleData;
 import com.example.a1621638.android_assignment_1.ui.editor.NoteEditActivity;
+import com.example.a1621638.android_assignment_1.ui.list.NoteListActivity;
+import com.example.a1621638.android_assignment_1.ui.list.NoteListFragment;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class NoteViewAdapter extends RecyclerView.Adapter<NoteViewAdapter.NoteViewHolder> {
 
-    private static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    private static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd HH:mm";
 
     // Contains the note information to be displayed.
     private List<Note> notes;
+    private NoteListFragment fragment;
     private Context context;
     private DateFormat format;
     private ActionMode actionMode;
 
-    public NoteViewAdapter(List<Note> notes, Context context) {
+    public NoteViewAdapter(List<Note> notes, NoteListFragment fragment) {
         this.notes = notes;
-        this.context = context;
+        this.fragment = fragment;
+        this.context = fragment.getContext();
         this.format = new SimpleDateFormat(DATE_FORMAT_PATTERN);
     }
 
@@ -55,7 +59,7 @@ public class NoteViewAdapter extends RecyclerView.Adapter<NoteViewAdapter.NoteVi
 
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder noteViewHolder, final int i) {
-        Note note = notes.get(i);
+        final Note note = notes.get(i);
         Category category = note.getCategory();
         noteViewHolder.parentLayout.setBackgroundColor(context.getColor(category.getResourceId()));
         noteViewHolder.noteTitleTextView.setText(note.getTitle());
@@ -72,7 +76,7 @@ public class NoteViewAdapter extends RecyclerView.Adapter<NoteViewAdapter.NoteVi
             public void onClick(View v) {
                 Context c = v.getContext();
                 Intent intent = new Intent(context, NoteEditActivity.class);
-                SampleData.selectedId = notes.get(i).getId();
+                NoteDataHandler.selectedId = notes.get(i).getId();
                 c.startActivity(intent);
             }
         });
@@ -100,17 +104,16 @@ public class NoteViewAdapter extends RecyclerView.Adapter<NoteViewAdapter.NoteVi
                     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                         switch(item.getItemId()) {
                             case R.id.reminder_MenuItem:
-                                Toast.makeText(context, "Reminder", Toast.LENGTH_SHORT).show();
-                                // Todo: Show the time selection menu
+                                fragment.startReminder(notes.get(i));
                                 mode.finish();
                                 return true;
                             case R.id.trash_MenuItem:
-                                Toast.makeText(context, "Trash", Toast.LENGTH_SHORT).show();
-                                // Todo: Delete the note
+                                NoteDataHandler.removeNote(notes.get(i));
+                                updateData(NoteDataHandler.getNotes());
+                                Toast.makeText(context, "Removed " + notes.get(i).getTitle(), Toast.LENGTH_SHORT).show();
                                 mode.finish();
                                 return true;
                             case R.id.close_MenuItem:
-                                Toast.makeText(context, "Close", Toast.LENGTH_SHORT).show();
                                 mode.finish();
                                 return true;
                             default:
@@ -123,11 +126,17 @@ public class NoteViewAdapter extends RecyclerView.Adapter<NoteViewAdapter.NoteVi
                     public void onDestroyActionMode(ActionMode mode) {
                         actionMode = null;
                     }
+
                 }, ActionMode.TYPE_FLOATING);
 
                 return true;
             }
         });
+    }
+
+    public void updateReminder(Note note, Date date) {
+        NoteDataHandler.updateReminder(note, date);
+        updateData(NoteDataHandler.getNotes());
     }
 
     @Override

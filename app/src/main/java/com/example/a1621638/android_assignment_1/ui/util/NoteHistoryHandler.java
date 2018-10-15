@@ -6,12 +6,12 @@ import com.example.a1621638.android_assignment_1.model.Note;
 import java.util.Date;
 import java.util.Stack;
 
-public class NoteManager {
+public class NoteHistoryHandler {
 
     private Note currentNote;
     private Stack<Note> notes;
 
-    public NoteManager() {
+    public NoteHistoryHandler() {
         notes = new Stack<>();
         currentNote = new Note();
         currentNote.setTitle("");
@@ -19,7 +19,7 @@ public class NoteManager {
         currentNote.setCategory(Category.WHITE);
     }
 
-    public NoteManager(Note note) {
+    public NoteHistoryHandler(Note note) {
         notes = new Stack<>();
         currentNote = note;
     }

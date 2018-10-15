@@ -1,5 +1,8 @@
 package com.example.a1621638.android_assignment_1.ui.list;
 
+import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -9,16 +12,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.a1621638.android_assignment_1.R;
 import com.example.a1621638.android_assignment_1.model.Note;
-import com.example.a1621638.android_assignment_1.model.SampleData;
+import com.example.a1621638.android_assignment_1.ui.util.DatePickerDialogFragment;
+import com.example.a1621638.android_assignment_1.ui.util.NoteDataHandler;
 import com.example.a1621638.android_assignment_1.ui.util.NoteItemDecoration;
 import com.example.a1621638.android_assignment_1.ui.util.NoteViewAdapter;
+import com.example.a1621638.android_assignment_1.ui.util.TimePickerDialogFragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,26 +37,57 @@ public class NoteListFragment extends Fragment implements AdapterView.OnItemSele
 
     private View root;
     private List<Note> notes;
-
+    private NoteViewAdapter adapter;
     private RecyclerView recyclerView;
 
     public NoteListFragment() {
         notes = new ArrayList<>();
-        notes.addAll(SampleData.getSortedByCreation());
+        notes.addAll(NoteDataHandler.getSortedByCreation());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_note_list, container, false);
+        NoteDataHandler.context = this.getContext();
         initRecyclerView();
         initSpinner();
         return root;
     }
 
+    public Date startReminder(final Note note) {
+        final Calendar calendar = Calendar.getInstance();
+
+        final TimePickerDialogFragment timePickerDialogFragment = TimePickerDialogFragment.create(
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        calendar.set(Calendar.MINUTE, minute);
+                        adapter.updateReminder(note, calendar.getTime());
+                    }
+                }
+        );
+
+        DatePickerDialogFragment datePickerDialogFragment = DatePickerDialogFragment.create(
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        timePickerDialogFragment.show(getFragmentManager(), "timePicker");
+                    }
+                }
+        );
+        datePickerDialogFragment.show(getFragmentManager(), "datePicker");
+        return calendar.getTime();
+    }
+
     private void initRecyclerView() {
         recyclerView = root.findViewById(R.id.note_RecyclerView);
-        NoteViewAdapter adapter = new NoteViewAdapter(notes, root.getContext());
+        adapter = new NoteViewAdapter(notes, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(root.getContext(), 2));
 
@@ -84,19 +124,19 @@ public class NoteListFragment extends Fragment implements AdapterView.OnItemSele
         if(adapter == null) return;
         switch(selection) {
             case "Title":
-                adapter.updateData(SampleData.getSortedByTitle());
+                adapter.updateData(NoteDataHandler.getSortedByTitle());
                 break;
             case "Creation Date":
-                adapter.updateData(SampleData.getSortedByCreation());
+                adapter.updateData(NoteDataHandler.getSortedByCreation());
                 break;
             case "Last Modified":
-                adapter.updateData(SampleData.getSortedByModified());
+                adapter.updateData(NoteDataHandler.getSortedByModified());
                 break;
             case "Reminder":
-                adapter.updateData(SampleData.getSortedByReminder());
+                adapter.updateData(NoteDataHandler.getSortedByReminder());
                 break;
             case "Category":
-                adapter.updateData(SampleData.getSortedByCategories());
+                adapter.updateData(NoteDataHandler.getSortedByCategories());
                 break;
         }
     }

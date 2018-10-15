@@ -20,11 +20,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.example.a1621638.android_assignment_1.model.Note;
-import com.example.a1621638.android_assignment_1.model.SampleData;
+import com.example.a1621638.android_assignment_1.ui.util.NoteDataHandler;
 import com.example.a1621638.android_assignment_1.ui.util.CircleView;
 import com.example.a1621638.android_assignment_1.ui.util.DatePickerDialogFragment;
 import com.example.a1621638.android_assignment_1.R;
-import com.example.a1621638.android_assignment_1.ui.util.NoteManager;
+import com.example.a1621638.android_assignment_1.ui.util.NoteHistoryHandler;
 import com.example.a1621638.android_assignment_1.ui.util.TimePickerDialogFragment;
 import com.example.a1621638.android_assignment_1.model.Category;
 
@@ -42,7 +42,7 @@ public class NoteEditFragment extends Fragment {
     private static final String HAS_REMINDER = "Reminder: ";
     private static final String NO_REMINDER = "Add a reminder";
 
-    private NoteManager noteManager;
+    private NoteHistoryHandler noteHistoryHandler;
     private DateFormat dateFormat;
 
     private LinearLayout optionsLinearLayout;
@@ -87,24 +87,24 @@ public class NoteEditFragment extends Fragment {
     }
 
     private void loadSelectedNote() {
-        List<Note> notes = SampleData.getSortedByCreation();
-        long noteId = SampleData.selectedId;
+        List<Note> notes = NoteDataHandler.getSortedByCreation();
+        long noteId = NoteDataHandler.selectedId;
 
         for(Note note : notes) {
             if(note.getId() == noteId) {
-                noteManager = new NoteManager(note);
+                noteHistoryHandler = new NoteHistoryHandler(note);
                 ConstraintLayout mainConstraintLayout = root.findViewById(R.id.main_ConstraintLayout);
                 loadNote(mainConstraintLayout);
             }
         }
 
-        if(noteManager == null) {
-            noteManager = new NoteManager();
+        if(noteHistoryHandler == null) {
+            noteHistoryHandler = new NoteHistoryHandler();
         }
     }
 
     public void shareNote() {
-        String data = noteManager.toString();
+        String data = noteHistoryHandler.toString();
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, data);
@@ -114,15 +114,15 @@ public class NoteEditFragment extends Fragment {
 
     private void loadNote(ConstraintLayout layout) {
         titleEditText.clearFocus();
-        titleEditText.setText(noteManager.getTitle());
+        titleEditText.setText(noteHistoryHandler.getTitle());
 
         bodyEditText.clearFocus();
-        bodyEditText.setText(noteManager.getBody());
+        bodyEditText.setText(noteHistoryHandler.getBody());
 
-        setBackgroundColor(noteManager.getCategory(), layout);
+        setBackgroundColor(noteHistoryHandler.getCategory(), layout);
 
-        if(noteManager.isHasReminder()) {
-            reminderTextView.setText(HAS_REMINDER + dateFormat.format(noteManager.getReminder()));
+        if(noteHistoryHandler.isHasReminder()) {
+            reminderTextView.setText(HAS_REMINDER + dateFormat.format(noteHistoryHandler.getReminder()));
         } else {
             reminderTextView.setText(NO_REMINDER);
         }
@@ -134,7 +134,7 @@ public class NoteEditFragment extends Fragment {
         undoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                noteManager.undo();
+                noteHistoryHandler.undo();
                 loadNote(mainConstraintLayout);
             }
         });
@@ -154,7 +154,7 @@ public class NoteEditFragment extends Fragment {
                 // Check that the EditText is focused by the user before saving the change.
                 // Otherwise, everytime setTitle() is called, a new copy of the Note is created.
                 if(getActivity().getCurrentFocus() == titleEditText) {
-                    noteManager.setTitle(titleEditText.getText().toString());
+                    noteHistoryHandler.setTitle(titleEditText.getText().toString());
                 }
             }
         });
@@ -172,7 +172,7 @@ public class NoteEditFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 if(getActivity().getCurrentFocus() == bodyEditText) {
-                    noteManager.setBody(bodyEditText.getText().toString());
+                    noteHistoryHandler.setBody(bodyEditText.getText().toString());
                 }
             }
         });
@@ -210,7 +210,7 @@ public class NoteEditFragment extends Fragment {
 
                                 Date currentReminder = calendar.getTime();
                                 reminderTextView.setText("Reminder: " + dateFormat.format(currentReminder));
-                                noteManager.setReminder(currentReminder);
+                                noteHistoryHandler.setReminder(currentReminder);
                             }
                         }
                 );
@@ -240,7 +240,7 @@ public class NoteEditFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 setBackgroundColor(category, mainConstraintLayout);
-                noteManager.setCategory(category);
+                noteHistoryHandler.setCategory(category);
             }
         });
     }

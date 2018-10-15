@@ -32,39 +32,4 @@ public class NoteListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
-
-    public void startReminder() {
-        final Calendar calendar = Calendar.getInstance();
-
-        final TimePickerDialogFragment timePickerDialogFragment = TimePickerDialogFragment.create(
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        calendar.set(Calendar.MINUTE, minute);
-
-                        reminder = calendar.getTime();
-                    }
-                }
-        );
-
-        DatePickerDialogFragment datePickerDialogFragment = DatePickerDialogFragment.create(
-                new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        calendar.set(Calendar.YEAR, year);
-                        calendar.set(Calendar.MONTH, month);
-                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-                        timePickerDialogFragment.show(getSupportFragmentManager(), "timePicker");
-                    }
-                }
-        );
-
-        datePickerDialogFragment.show(getSupportFragmentManager(), "datePicker");
-    }
-
-    public Date getReminderDate() {
-        return reminder;
-    }
 }

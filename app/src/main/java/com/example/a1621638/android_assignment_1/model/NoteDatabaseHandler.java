@@ -13,13 +13,8 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
     private static NoteTable table;
 
     public NoteDatabaseHandler(Context context) {
-        super(context, "notes.db", null, 1);
+        super(context, "notes.db", null, 2);
         table = new NoteTable(this, TABLE_NAME);
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        table.addColumn(new Column("noteId", Column.Type.INTEGER).notNull());
         table.addColumn(new Column("title", Column.Type.TEXT).notNull());
         table.addColumn(new Column("body", Column.Type.TEXT));
         table.addColumn(new Column("category", Column.Type.INTEGER));
@@ -27,7 +22,10 @@ public class NoteDatabaseHandler extends SQLiteOpenHelper {
         table.addColumn(new Column("reminder", Column.Type.TEXT));
         table.addColumn(new Column("created", Column.Type.TEXT));
         table.addColumn(new Column("modified", Column.Type.TEXT));
+    }
 
+    @Override
+    public void onCreate(SQLiteDatabase db) {
         db.execSQL(table.getCreateTableStatement());
     }
 

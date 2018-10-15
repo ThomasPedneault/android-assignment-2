@@ -25,8 +25,6 @@ public class NoteTable extends Table<Note> {
     public ContentValues toContentValues(Note element) throws DatabaseException {
         ContentValues values = new ContentValues();
 
-        values.put("noteId", element.getId());
-
         values.put("title", element.getTitle());
         values.put("body", element.getBody());
         values.put("category", element.getCategory().getColorId());
@@ -60,9 +58,6 @@ public class NoteTable extends Table<Note> {
             indices[i] = cursor.getColumnIndex(columns[i]);
         }
 
-        cursor.moveToFirst();
-        if(cursor.isAfterLast()) throw new DatabaseException("No records returned");
-
         Note note = new Note();
         note.setId(cursor.getLong(indices[0]));
         note.setTitle(cursor.getString(indices[1]));
@@ -70,9 +65,18 @@ public class NoteTable extends Table<Note> {
         note.setCategory(Category.fromColorId(cursor.getInt(indices[3])));
         note.setHasReminder(cursor.getInt(indices[4]) == 1);
         try {
-            note.setReminder(DATE_FORMAT.parse(cursor.getString(indices[5])));
-            note.setCreated(DATE_FORMAT.parse(cursor.getString(indices[6])));
-            note.setModified(DATE_FORMAT.parse(cursor.getString(indices[7])));
+            String reminderStr = cursor.getString(indices[5]);
+            if(reminderStr.equals("")) note.setReminder(null);
+            else note.setReminder(DATE_FORMAT.parse(reminderStr));
+
+            String createdStr = cursor.getString(indices[6]);
+            if(createdStr.equals("")) note.setCreated(null);
+            else note.setCreated(DATE_FORMAT.parse(createdStr));
+
+            String modifiedStr = cursor.getString(indices[7]);
+            if(modifiedStr.equals("")) note.setModified(null);
+            else note.setModified(DATE_FORMAT.parse(modifiedStr));
+
         } catch (ParseException e) {
             e.printStackTrace();
         }

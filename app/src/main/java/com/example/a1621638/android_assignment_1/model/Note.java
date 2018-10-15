@@ -3,6 +3,7 @@ package com.example.a1621638.android_assignment_1.model;
 import com.example.a1621638.android_assignment_1.sqlite.Identifiable;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Represent a single note in the "Notes" app.
@@ -164,5 +165,26 @@ public class Note implements Identifiable<Long> {
                 ", created=" + created +
                 ", modified=" + modified +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Note note = (Note) o;
+        return id == note.id &&
+                hasReminder == note.hasReminder &&
+                Objects.equals(title, note.title) &&
+                Objects.equals(body, note.body) &&
+                category == note.category &&
+                Objects.equals(reminder, note.reminder) &&
+                Objects.equals(created, note.created) &&
+                Objects.equals(modified, note.modified);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, title, body, category, hasReminder, reminder, created, modified);
     }
 }
