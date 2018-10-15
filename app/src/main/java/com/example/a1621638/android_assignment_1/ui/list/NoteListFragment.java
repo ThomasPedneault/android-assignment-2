@@ -33,7 +33,7 @@ public class NoteListFragment extends Fragment implements AdapterView.OnItemSele
 
     public NoteListFragment() {
         notes = new ArrayList<>();
-        notes.addAll(SampleData.getNotes());
+        notes.addAll(SampleData.getSortedByCreation());
     }
 
     @Override
@@ -84,13 +84,16 @@ public class NoteListFragment extends Fragment implements AdapterView.OnItemSele
         if(adapter == null) return;
         switch(selection) {
             case "Title":
-                adapter.updateData(SampleData.getNotes());
+                adapter.updateData(SampleData.getSortedByTitle());
                 break;
             case "Creation Date":
+                adapter.updateData(SampleData.getSortedByCreation());
                 break;
             case "Last Modified":
+                adapter.updateData(SampleData.getSortedByModified());
                 break;
             case "Reminder":
+                adapter.updateData(SampleData.getSortedByReminder());
                 break;
             case "Category":
                 adapter.updateData(SampleData.getSortedByCategories());

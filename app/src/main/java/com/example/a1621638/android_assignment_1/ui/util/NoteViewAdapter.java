@@ -26,7 +26,7 @@ import java.util.List;
 
 public class NoteViewAdapter extends RecyclerView.Adapter<NoteViewAdapter.NoteViewHolder> {
 
-    private static final String DATE_FORMAT_PATTERN = "EEEE, MMMM d 'at' h:mm a";
+    private static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     // Contains the note information to be displayed.
     private List<Note> notes;

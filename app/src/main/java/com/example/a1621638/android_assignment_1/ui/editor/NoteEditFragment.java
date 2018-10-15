@@ -87,7 +87,7 @@ public class NoteEditFragment extends Fragment {
     }
 
     private void loadSelectedNote() {
-        List<Note> notes = SampleData.getNotes();
+        List<Note> notes = SampleData.getSortedByCreation();
         long noteId = SampleData.selectedId;
 
         for(Note note : notes) {
