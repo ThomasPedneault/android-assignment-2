@@ -21,17 +21,13 @@ public class NoteDataHandler {
     private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     public static long selectedId;
-    public static Context context;
 
     private static NoteDatabaseHandler dbh;
 
     private static List<Note> notes;
 
-    public static List<Note> getNotes() {
-        if(notes == null) {
-            notes = readNotesFromDatabase();
-        }
-        return notes;
+    public static List<Note> getCurrentNotes() {
+        return new ArrayList<>(notes);
     }
 
     public static List<Note> getSortedByCategories() {
@@ -107,6 +103,13 @@ public class NoteDataHandler {
         note.setHasReminder(true);
     }
 
+    private static List<Note> getNotes() {
+        if(notes == null) {
+            notes = createRandomNotes();
+        }
+        return notes;
+    }
+
     private static List<Note> createRandomNotes() {
         List<Note> notes = new ArrayList<>();
         Random rng = new Random();
@@ -133,8 +136,13 @@ public class NoteDataHandler {
     }
 
     private static List<Note> readNotesFromDatabase() {
-        if(dbh == null) {
-            dbh = new NoteDatabaseHandler(context);
+        List<Note> notes = new ArrayList<>();
+        while(dbh == null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         try {
             notes = dbh.getNoteTable().readAll();

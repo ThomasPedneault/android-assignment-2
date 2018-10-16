@@ -49,7 +49,6 @@ public class NoteListFragment extends Fragment implements AdapterView.OnItemSele
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_note_list, container, false);
-        NoteDataHandler.context = this.getContext();
         initRecyclerView();
         initSpinner();
         return root;

@@ -109,7 +109,7 @@ public class NoteViewAdapter extends RecyclerView.Adapter<NoteViewAdapter.NoteVi
                                 return true;
                             case R.id.trash_MenuItem:
                                 NoteDataHandler.removeNote(notes.get(i));
-                                updateData(NoteDataHandler.getNotes());
+                                updateData(NoteDataHandler.getCurrentNotes());
                                 Toast.makeText(context, "Removed " + notes.get(i).getTitle(), Toast.LENGTH_SHORT).show();
                                 mode.finish();
                                 return true;
@@ -136,7 +136,7 @@ public class NoteViewAdapter extends RecyclerView.Adapter<NoteViewAdapter.NoteVi
 
     public void updateReminder(Note note, Date date) {
         NoteDataHandler.updateReminder(note, date);
-        updateData(NoteDataHandler.getNotes());
+        updateData(NoteDataHandler.getCurrentNotes());
     }
 
     @Override
